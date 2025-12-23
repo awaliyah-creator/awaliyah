@@ -33,13 +33,13 @@
     {{-- ============================================
          NAVBAR
          ============================================ --}}
-    @include('profile.partials.navbar')
+    @include('partials.navbar')
 
     {{-- ============================================
          FLASH MESSAGES
          ============================================ --}}
     <div class="container mt-3">
-        @include('profile.partials.flash-messages')
+        @include('partials.flash-messages')
     </div>
 
     {{-- ============================================
@@ -52,7 +52,7 @@
     {{-- ============================================
          FOOTER
          ============================================ --}}
-    @include('profile.partials.footer')
+    @include('partials.footer')
 
     {{-- Stack untuk JS tambahan per halaman --}}
     @stack('scripts')
