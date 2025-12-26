@@ -1,6 +1,6 @@
 {{-- ================================================
      FILE: resources/views/layouts/app.blade.php
-     FUNGSI: Master layout untuk halaman customer/publik
+     FUNGSI: Master layout halaman publik (Tailwind)
      ================================================ --}}
 
 <!DOCTYPE html>
@@ -9,120 +9,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    {{-- CSRF Token untuk AJAX --}}
+    {{-- CSRF Token --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    {{-- SEO Meta Tags --}}
+    {{-- SEO --}}
     <title>@yield('title', 'Toko Online') - {{ config('app.name') }}</title>
     <meta name="description" content="@yield('meta_description', 'Toko online terpercaya dengan produk berkualitas')">
 
     {{-- Favicon --}}
     <link rel="icon" href="{{ asset('favicon.ico') }}">
 
-    {{-- Google Fonts --}}
+    {{-- Google Font --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    {{-- Vite CSS --}}
+    {{-- AOS --}}
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    {{-- Vite (Tailwind) --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    {{-- Stack untuk CSS tambahan per halaman --}}
+    {{-- Page Specific CSS --}}
     @stack('styles')
 </head>
-<body>
-    {{-- ============================================
-         NAVBAR
-         ============================================ --}}
-    @include('partials.navbar')
 
-    {{-- ============================================
-         FLASH MESSAGES
-         ============================================ --}}
-    <div class="container mt-3">
-        @include('partials.flash-messages')
+<body class="font-inter bg-gray-100 text-gray-800">
+
+    {{-- =============================
+         NAVBAR
+         ============================= --}}
+    @include('profile.partials.navbar')
+
+    {{-- =============================
+         FLASH MESSAGE
+         ============================= --}}
+    <div class="max-w-7xl mx-auto px-4 mt-4">
+        @include('profile.partials.flash-messages')
     </div>
 
-    {{-- ============================================
+    {{-- =============================
          MAIN CONTENT
-         ============================================ --}}
-    <main class="min-vh-100">
+         ============================= --}}
+    <main class="min-h-screen">
         @yield('content')
+        @yield('head')
     </main>
 
-    {{-- ============================================
+    {{-- =============================
          FOOTER
-         ============================================ --}}
-    @include('partials.footer')
+         ============================= --}}
+    @include('profile.partials.footer')
 
-    {{-- Stack untuk JS tambahan per halaman --}}
+    {{-- =============================
+         SCRIPTS
+         ============================= --}}
+         @stack('styles')
     @stack('scripts')
+
+    {{-- AOS --}}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-  /**
-   * Fungsi AJAX untuk Toggle Wishlist
-   * Menggunakan Fetch API (Modern JS) daripada jQuery.
-   */
-  async function toggleWishlist(productId) {
-    try {
-      // 1. Ambil CSRF token dari meta tag HTML
-      // Laravale mewajibkan token ini untuk setiap request POST demi keamanan.
-      const token = document.querySelector('meta[name="csrf-token"]').content;
+        AOS.init({ once: true });
+    </script>
 
-      // 2. Kirim Request ke Server
-      const response = await fetch(`/wishlist/toggle/${productId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-TOKEN": token, // Tempel token di header
-        },
-      });
+    {{-- Wishlist Button --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.wishlist-btn').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
 
-      // 3. Handle jika user belum login (Error 401 Unauthorized)
-      if (response.status === 401) {
-        window.location.href = "/login"; // Lempar ke halaman login
-        return;
-      }
+                    const productId = this.dataset.productId;
+                    const icon = this.querySelector('i');
 
-      // 4. Baca respon JSON dari server
-      const data = await response.json();
+                    fetch(`/wishlist/${productId}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document
+                                .querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content'),
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.added) {
+                            icon.classList.replace('bi-heart', 'bi-heart-fill');
+                            icon.classList.add('text-red-500');
+                        } else {
+                            icon.classList.replace('bi-heart-fill', 'bi-heart');
+                            icon.classList.remove('text-red-500');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 
-      if (data.status === "success") {
-        // 5. Update UI tanpa reload halaman
-        updateWishlistUI(productId, data.added); // Ganti warna ikon
-        updateWishlistCounter(data.count); // Update angka di header
-        showToast(data.message); // Tampilkan notifikasi
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      showToast("Terjadi kesalahan sistem.", "error");
-    }
-  }
-
-  function updateWishlistUI(productId, isAdded) {
-    // Cari semua tombol wishlist untuk produk ini (bisa ada di card & detail page)
-    const buttons = document.querySelectorAll(`.wishlist-btn-${productId}`);
-
-    buttons.forEach((btn) => {
-      const icon = btn.querySelector("i"); // Menggunakan tag <i> untuk Bootstrap Icons
-      if (isAdded) {
-        // Ubah jadi merah solid (Love penuh)
-        icon.classList.remove("bi-heart", "text-secondary");
-        icon.classList.add("bi-heart-fill", "text-danger");
-      } else {
-        // Ubah jadi abu-abu outline (Love kosong)
-        icon.classList.remove("bi-heart-fill", "text-danger");
-        icon.classList.add("bi-heart", "text-secondary");
-      }
-    });
-  }
-
-  function updateWishlistCounter(count) {
-    const badge = document.getElementById("wishlist-count");
-    if (badge) {
-      badge.innerText = count;
-      // Bootstrap badge display toggle logic
-      badge.style.display = count > 0 ? "inline-block" : "none";
-    }
-  }
-</script>
 </body>
 </html>

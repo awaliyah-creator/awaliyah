@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -52,37 +53,60 @@ class User extends Authenticatable
         ];
     }
 
-    public function cart()
+     public function cart()
     {
         return $this->hasOne(Cart::class);
     }
-    public function wishlists()
-    {
-        return $this->hasMany(Wishlist::class);
-    }
+
+    /**
+     * User memiliki banyak item wishlist.
+     */
+   
+
+    /**
+     * User memiliki banyak pesanan.
+     */
     public function orders()
     {
         return $this->hasMany(Order::class);
     }
-     public function wishlistProducts()
-    {
-        return $this->belongsToMany(Product::class, 'wishlists')
-                    ->withTimestamps();
-    }
+
+    /**
+     * Relasi many-to-many ke products melalui wishlists.
+     */
+    public function wishlistProducts()
+{
+    return $this->belongsToMany(Product::class, 'wishlists')
+        ->withTimestamps();
+}
+    // ==================== HELPER METHODS ====================
+
+    /**
+     * Cek apakah user adalah admin.
+     */
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
     }
+
+    /**
+     * Cek apakah user adalah customer.
+     */
     public function isCustomer(): bool
     {
         return $this->role === 'customer';
     }
+
+    /**
+     * Cek apakah produk ada di wishlist user.
+     */
     public function hasInWishlist(Product $product): bool
     {
-        return $this->wishlists()
+        return $this->wishlistProducts()
                     ->where('product_id', $product->id)
                     ->exists();
     }
+
     public function getAvatarUrlAttribute(): string
 {
     // Prioritas 1: Avatar yang di-upload (file fisik ada di server)
@@ -123,4 +147,6 @@ public function getInitialsAttribute(): string
     // Ambil maksimal 2 huruf pertama saja
     return substr($initials, 0, 2);
 }
+
+
 }
