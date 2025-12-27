@@ -9,6 +9,7 @@
                 <div class="card-header bg-white fw-bold">Filter Produk</div>
                 <div class="card-body">
                     <form action="{{ route('catalog.index') }}" method="GET">
+                        @csrf
                         @if(request('q')) <input type="hidden" name="q" value="{{ request('q') }}"> @endif
 
                         {{-- Filter Kategori --}}
