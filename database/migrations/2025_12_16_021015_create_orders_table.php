@@ -51,6 +51,9 @@ return new class extends Migration
             $table->index('order_number');
             $table->index('status');
             $table->index('created_at');
+
+            // Status Pembayaran (PENTING: tambahkan ini)
+            $table->enum('payment_status', ['unpaid', 'paid', 'failed'])->default('unpaid');
         });
     }
 

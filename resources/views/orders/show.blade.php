@@ -3,7 +3,11 @@
 @extends('layouts.app') {{-- Pastikan layout ini sudah memuat Bootstrap CSS & JS --}}
 
 @section('title', 'Detail Pesanan')
-
+{{-- Tambahkan ini untuk cek isi variabel --}}
+<div class="alert alert-info">
+    Debug: Snap Token = {{ $snapToken ?? 'KOSONG / TIDAK ADA' }} <br>
+    Debug: Status Pesanan = {{ $order->status }}
+</div>
 @section('content')
 <div class="container py-5">
     <div class="row justify-content-center">
@@ -136,6 +140,7 @@
 
                 if (payButton) {
                     payButton.addEventListener('click', function() {
+                        // Efek loading saat diklik
                         payButton.disabled = true;
                         payButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Memproses...';
 
@@ -149,14 +154,15 @@
                             onError: function(result) {
                                 alert('Pembayaran gagal! Silakan coba lagi.');
                                 payButton.disabled = false;
-                                payButton.innerHTML = '💳 Bayar Sekarang';
+                                payButton.innerHTML = '<i class="bi bi-credit-card me-2"></i> Bayar Sekarang';
                             },
                             onClose: function() {
+                                // Fungsi jika user menutup popup tanpa membayar
                                 payButton.disabled = false;
-                                payButton.innerHTML = '💳 Bayar Sekarang';
+                                payButton.innerHTML = '<i class="bi bi-credit-card me-2"></i> Bayar Sekarang';
                             }
-                        });
-                    });
+                        }); // Penutup window.snap.pay
+                    }); // Penutup addEventListener
                 }
             });
         </script>

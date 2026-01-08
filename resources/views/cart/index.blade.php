@@ -1,8 +1,3 @@
-{{-- ================================================
-     FILE: resources/views/cart/index.blade.php
-     FUNGSI: Halaman keranjang belanja
-     ================================================ --}}
-
 @extends('layouts.app')
 
 @section('title', 'Keranjang Belanja')
@@ -66,7 +61,8 @@
                                             </form>
                                         </td>
                                         <td class="text-end align-middle fw-bold">
-                                            Rp {{ number_format($item->subtotal, 0, ',', '.') }}
+                                            {{-- FIX: Hitung manual Harga x Quantity --}}
+                                            Rp {{ number_format($item->product->price * $item->quantity, 0, ',', '.') }}
                                         </td>
                                         <td class="align-middle">
                                             <form action="{{ route('cart.remove', $item->id) }}" method="POST">
@@ -95,13 +91,15 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-2">
                             <span>Total Harga ({{ $cart->items->sum('quantity') }} barang)</span>
-                            <span>Rp {{ number_format($cart->items->sum('subtotal'), 0, ',', '.') }}</span>
+                            {{-- FIX: Hitung total semua subtotal secara manual --}}
+                            <span>Rp {{ number_format($cart->items->sum(fn($i) => $i->product->price * $i->quantity), 0, ',', '.') }}</span>
                         </div>
                         <hr>
                         <div class="d-flex justify-content-between mb-3">
                             <span class="fw-bold">Total</span>
                             <span class="fw-bold text-primary fs-5">
-                                Rp {{ number_format($cart->items->sum('subtotal'), 0, ',', '.') }}
+                                {{-- FIX: Hitung total semua subtotal secara manual --}}
+                                Rp {{ number_format($cart->items->sum(fn($i) => $i->product->price * $i->quantity), 0, ',', '.') }}
                             </span>
                         </div>
                         <a href="{{ route('checkout.index') }}" class="btn btn-primary w-100 btn-lg">

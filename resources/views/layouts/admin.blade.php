@@ -3,7 +3,7 @@
      FUNGSI: Master layout untuk halaman admin
      ================================================ --}}
 
-<!DOCTYPE html>
+     <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -83,7 +83,7 @@
                                  Jangan query database langsung di Blade view di production app! --}}
                             @php
                                 $pendingCount = \App\Models\Order::where('status', 'pending')
-                                    ->where('payment_status', 'paid')->count();
+                                    ->where('status', 'paid')->count();
                             @endphp
                             @if($pendingCount > 0)
                                 <span class="badge bg-warning text-dark ms-auto">{{ $pendingCount }}</span>

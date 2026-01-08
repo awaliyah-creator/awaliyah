@@ -20,30 +20,22 @@ class ProductController extends Controller
     /**
      * Menampilkan daftar produk dengan fitur pagination dan filtering.
      */
-    public function index(Request $request): View
-    {
-        $products = Product::query()
-            // Eager Loading: Meload relasi kategori & gambar utama sekaligus.
-            // Tanpa 'with', Laravel akan mengeksekusi 1 query tambahan untuk SETIAP baris produk (N+1 Problem).
-            ->with(['category', 'primaryImage'])
+    public function index(Request $request)
+{
+    $query = Product::with('category', 'primaryImage');
 
-            // Filter: Pencarian nama produk
-            ->when($request->search, function ($query, $search) {
-                $query->search($search); // Menggunakan Scope 'search' di Model Product
-            })
-            // Filter: Berdasarkan Kategori
-            ->when($request->category, function ($query, $categoryId) {
-                $query->where('category_id', $categoryId);
-            })
-            ->latest() // Urut dari yang terbaru
-            ->paginate(15) // Batasi 15 item per halaman
-            ->withQueryString(); // Memastikan parameter URL (?search=xx) tetap ada saat pindah halaman
-
-        // Ambil data kategori untuk dropdown filter di view
-        $categories = Category::active()->orderBy('name')->get();
-
-        return view('admin.products.index', compact('products', 'categories'));
+    // Logika Filter: Jika ada parameter category di URL
+    if ($request->has('category') && $request->category != '') {
+        $query->whereHas('category', function($q) use ($request) {
+            $q->where('slug', $request->category);
+        });
     }
+
+    $products = $query->latest()->paginate(10);
+    $categories = Category::all(); // Dibutuhkan untuk isi dropdown
+
+    return view('admin.products.index', compact('products', 'categories'));
+}
 
     /**
      * Menampilkan form tambah produk.

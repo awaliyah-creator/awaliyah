@@ -35,6 +35,9 @@
 
     {{-- Page Specific CSS --}}
     @stack('styles')
+
+    {{-- Stack untuk script tambahan dari child view --}}
+    @stack('scripts')
 </head>
 
 <body class="font-inter bg-gray-100 text-gray-800">

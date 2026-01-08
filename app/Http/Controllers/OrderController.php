@@ -86,4 +86,25 @@ class OrderController extends Controller
 
         return view('orders.show', compact('order', 'snapToken'));
     }
+    /**
+     * Menampilkan halaman status pembayaran sukses.
+     */
+    public function success(Order $order)
+    {
+        if ($order->user_id !== auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses ke pesanan ini.');
+        }
+        return view('orders.success', compact('order'));
+    }
+
+    /**
+     * Menampilkan halaman status pembayaran pending.
+     */
+    public function pending(Order $order)
+    {
+        if ($order->user_id !== auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses ke pesanan ini.');
+        }
+        return view('orders.pending', compact('order'));
+    }
 }

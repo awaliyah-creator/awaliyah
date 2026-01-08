@@ -9,7 +9,7 @@
 
 @section('content')
     {{-- Hero Section --}}
-    <section class="bg-primary text-white py-5">
+    <section class="bg-danger text-white py-5">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6">
@@ -25,8 +25,8 @@
                     </a>
                 </div>
                 <div class="col-lg-6 d-none d-lg-block text-center">
-                    <img src="{{ asset('images/hero-shopping.svg') }}"
-                         alt="Shopping" class="img-fluid" style="max-height: 400px;">
+                    <img src="{{ asset('images/logo.png') }}"
+                         alt="Shopping" class="img-fluid" style="max-height: 200px;">
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="mb-0">Produk Unggulan</h2>
-                <a href="{{ route('catalog.index') }}" class="btn btn-outline-primary">
+                <a href="{{ route('catalog.index') }}" class="btn btn-outline-danger">
                     Lihat Semua <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
@@ -78,36 +78,24 @@
         </div>
     </section>
 
-    {{-- Promo Banner --}}
-    <section class="py-5">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="card bg-warning text-dark border-0" style="min-height: 200px;">
-                        <div class="card-body d-flex flex-column justify-content-center">
-                            <h3>Flash Sale!</h3>
-                            <p>Diskon hingga 50% untuk produk pilihan</p>
-                            <a href="#" class="btn btn-dark" style="width: fit-content;">
-                                Lihat Promo
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card bg-info text-white border-0" style="min-height: 200px;">
-                        <div class="card-body d-flex flex-column justify-content-center">
-                            <h3>Member Baru?</h3>
-                            <p>Dapatkan voucher Rp 50.000 untuk pembelian pertama</p>
-                            <a href="{{ route('register') }}" class="btn btn-light" style="width: fit-content;">
-                                Daftar Sekarang
-                            </a>
-                        </div>
+    
+                <section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center"> 
+            <div class="col-md-6">
+                <div class="card bg-danger text-white border-0" style="min-height: 200px;">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                        <h3>Member Baru?</h3>
+                        <p>Dapatkan voucher Rp 50.000 untuk pembelian pertama</p>
+                        <a href="{{ route('register') }}" class="btn btn-light" style="width: fit-content;">
+                            Daftar Sekarang
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-
+    </div>
+</section>
     {{-- Produk Terbaru --}}
     <section class="py-5">
         <div class="container">

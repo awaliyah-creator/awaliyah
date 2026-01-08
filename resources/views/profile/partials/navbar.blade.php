@@ -6,9 +6,9 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
     <div class="container">
         {{-- Logo & Brand --}}
-        <a class="navbar-brand text-primary" href="{{ route('home') }}">
+        <a class="navbar-brand text-danger" href="{{ route('home') }}">
             <i class="bi bi-bag-heart-fill me-2"></i>
-            TokoOnline
+            HeartPerpus
         </a>
 
         {{-- Mobile Toggle --}}
@@ -28,7 +28,7 @@
                            class="form-control"
                            placeholder="Cari produk..."
                            value="{{ request('q') }}">
-                    <button class="btn btn-outline-primary" type="submit">
+                    <button class="btn btn-outline-danger" type="submit">
                         <i class="bi bi-search"></i>
                     </button>
                 </div>

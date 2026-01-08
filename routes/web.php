@@ -19,9 +19,10 @@ use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
-
+use App\Http\Controllers\Admin\ReportController;
 
 use App\Http\Middleware\AdminMiddleware;
 
@@ -102,7 +103,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard
-    Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     // Produk CRUD
     Route::resource('products', AdminProductController::class);
@@ -110,10 +111,10 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admi
     // Kategori CRUD
     Route::resource('categories', AdminCategoryController::class);
 
-    // Manajemen Pesanan
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+
 });
 
 Route::middleware(['auth', AdminMiddleware::class])
@@ -121,17 +122,22 @@ Route::middleware(['auth', AdminMiddleware::class])
     ->name('admin.')
     ->group(function () {
 
+        Route::get('/reports/sales', [ReportController::class, 'sales'])
+        ->name('reports.sales');
+
+        Route::get('/reports/export-sales', [ReportController::class, 'exportSales'])->name('reports.export-sales');
+
+        
         Route::get('/dashboard', [AdminController::class, 'dashboard'])
             ->name('dashboard');
 
-        Route::get('/reports/sales', [ReportController::class, 'sales'])
-            ->name('reports.sales');
+        
     });
 // routes/web.php
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function() {
-    Route::get('users', [\App\Http\Controllers\Admin\UserController::class, 'index'])
-         ->name('admin.users.index');
-});
+        Route::get('users', [\App\Http\Controllers\Admin\UserController::class, 'index'])
+        ->name('admin.users.index');
+    });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Kategori
